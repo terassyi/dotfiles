@@ -3,19 +3,10 @@
 # check os
 OS=$(uname)
 
-echo $OS
-
 # switch default shell to zsh
 if [ $SHELL != "/bin/zsh" ]; then
 	chsh -s /bin/zsh
 fi
-
-# setup golang
-git clone https://github.com/canha/golang-tools-install-script
-cd golang-tools-install-script
-chmod +x goinstall.sh
-./goinstall.sh
-rm -rf golang-tools-install-script
 
 # install powerline-go
 
