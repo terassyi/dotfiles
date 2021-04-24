@@ -30,6 +30,13 @@ set shiftwidth=4
 set mouse=a
 
 "dein scripts---------------------------
+let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+let s:dein_dir = s:cache_home . '/dein'
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if !isdirectory(s:dein_repo_dir)
+  call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
+endif
+
 if &compatible
 	set nocompatible
 endif
@@ -83,8 +90,8 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
 
 " color
-colorscheme darcula
-" colorscheme sonokai
+" colorscheme darcula
+colorscheme sonokai
 
 autocmd VimEnter,ColorScheme * highlight Comment ctermfg=235 ctermbg=237
 syntax enable
