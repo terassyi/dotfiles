@@ -2,14 +2,13 @@ filetype on
 filetype plugin indent on
 
 
-" set background=dark
 set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set relativenumber
 set wildmenu
 
 set ruler
-" set cursorline
-" set cursorcolumn
 set number
 set hidden
 
@@ -45,7 +44,7 @@ set runtimepath+=$HOME/.cache/dein/repos/github.com/Shougo/dein.vim
 
 if dein#load_state('$HOME/.cache/dein')
 	call dein#begin('$HOME/.cache/dein')
-		call dein#add('preservim/nerdtree')
+		call dein#add('lambdalisue/fern.vim')
 		call dein#add('tpope/vim-fugitive')
 		call dein#add('majutsushi/tagbar')
 		call dein#add('nathanaelkane/vim-indent-guides')
@@ -62,9 +61,12 @@ if dein#load_state('$HOME/.cache/dein')
 		call dein#add('Shougo/deoplete.nvim')
 		call dein#add('lighttiger2505/deoplete-vim-lsp')
 		" call dein#add('cohama/lexima.vim')
+		call dein#add('vim-denops/denops.vim')
+		call dein#add('higashi000/dps-kakkonan')
 
 		call dein#add('doums/darcula')
 		call dein#add('sainnhe/sonokai')
+		call dein#add ('chriskempson/base16-vim')
 	call dein#end()
 endif
 
@@ -72,26 +74,16 @@ if dein#check_install()
 	call dein#install()
 endif
 
-
-" nerd tree settings
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
-autocmd VimEnter * NERDTree | wincmd p
-
-" Exit Vim if NERDTree is the only window left.
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
-    \ quit | endif
+" leader setting
+let mapleader = "\<Space>"
 
 " Indent highlighit
 let g:indent_guides_auto_colors = 0
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
 
-" color
-" colorscheme darcula
-colorscheme sonokai
+let base16colorspace=256  " Access colors present in 256 colorspace
+colorscheme base16-default-dark
 
 autocmd VimEnter,ColorScheme * highlight Comment ctermfg=235 ctermbg=237
 syntax enable
@@ -118,21 +110,44 @@ if has('vim_starting')
 	let &t_SR .= "\e[4 q"
 endif
 
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>h <C-w>h
+nnoremap <Leader>l <C-w>l
+nnoremap <Leader>j <C-w>j
+nnoremap <Leader>k <C-w>k
+nnoremap <Leader>, :bp<CR>
+nnoremap <Leader>. :bn<CR>
+
+noremap <C-e> :Fern . -reveal=% -drawer<CR>
+
 noremap <C-Z> :Unite file_mru<CR>
 noremap <C-N> :Unite -buffer-name=file file<CR>
 noremap <C-P> :Unite buffer<CR>
 
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+"inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+inoremap <expr><CR> pumvisible() ? "<C-y>" : "<CR>"
+set completeopt=menuone,noinsert
+inoremap <expr><C-j> pumvisible() ? "<Down>" : "<C-j>"
+inoremap <expr><C-k> pumvisible() ? "<Up>" : "<C-k>"
 
+nmap <Tab> gt
+nmap <S-Tab> gT
 
 nmap <buffer> gd <plug>(lsp-definition)
 nmap <buffer> <C-]> <plug>(lsp-definition)
-nmap <buffer> <Leader>d <plug>(lsp-type-definition)
-nmap <buffer> <Leader>r <plug>(lsp-references)
-nmap <buffer> <Leader>i <plug>(lsp-implementation)
-nmap <buffer> <f2> <plug>(lsp-rename)
-nmap <buffer> <Leader>e <plug>(lsp-document-diagnostics)
+"nmap <buffer> <Leader>d <plug>(lsp-type-definition)
+"nmap <buffer> <Leader>r <plug>(lsp-references)
+"nmap <buffer> <Leader>i <plug>(lsp-implementation)
+"nmap <buffer> <Leader>e <plug>(lsp-document-diagnostics)
+nmap <silent> ] :LspDefinition<CR>
+nmap <silent> <Leader>d :LspTypeDefinition<CR>
+nmap <silent> [ :LspReferences<CR>
+nmap <silent> ]] :LspImplementation<CR>
+nmap <buffer> <Leader>e :LspDocumentDiagnostics<CR>
+nmap <buffer> <Leader>r :LspRename
 
-inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
